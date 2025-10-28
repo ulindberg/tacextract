@@ -1,13 +1,22 @@
 [project]
 name = "tacextract"
 version = "0.1.0"
-description = "Add your description here"
+description = "Time Activity Extraction of Dynamic PET DICOM data"
 readme = "README.md"
 authors = [
-    { name = "Ulrich Lindberg", email = "ulrich.olsen@gmail.com" }
+    { name = "Ulrich Lindberg", email = "ulrich.lindberg@regionh.dk" }
 ]
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "multiprocessing",
+    "numpy",
+    "pydicom",
+    "nibabel"
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+packages = ["tacextract"]
 
 [build-system]
 requires = ["uv_build>=0.9.5,<0.10.0"]
