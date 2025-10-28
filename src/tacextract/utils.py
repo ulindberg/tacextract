@@ -1,7 +1,6 @@
 """Utility functions for dynamic PET image processing."""
 
 from pathlib import Path
-from multiprocessing import Pool, RawArray, cpu_count
 import numpy as np
 from pydicom import dcmread
 from pydicom.misc import is_dicom
@@ -27,6 +26,22 @@ def create_filelist_from_series_path(input_path: Path, strict: bool = False)->li
         filelist  = [s for s in input_path.iterdir() if s.name.endswith(('.dcm','.ima'))] # Fast
     
     return filelist
+
+def get_midframe_time(mlist: list)->np.ndarray:
+    tlist = list(zip(*mlist))
+    
+    # Get frame time info
+    _,frameidx = np.unique(tlist[1], return_index=True)
+    FrameTimesStart = np.array(tlist[2])[frameidx]
+    FrameDuration = np.array(tlist[3])[frameidx]
+
+    # Handle bug in Siemens DICOM meta data
+    if FrameTimesStart[0] == -1:
+        print(f'Correcting Siemens Bug')
+        FrameTimesStart += 1
+    
+    # Returning MidFrameTime
+    return FrameTimesStart+FrameDuration/2
 
 def dcminfo(dcmfile: Path)->list:
     """ Read selected meta tags from DICOM file
@@ -101,13 +116,6 @@ def change_array(mlistrow):
     X_np = np.frombuffer(array, dtype='float64')
     nvoxels = ds.Columns*ds.Rows
     X_np[nvoxels*(Slice+(Frame*NumberOfSlices)):nvoxels*(Slice+1+(Frame*NumberOfSlices))] = ds.pixel_array.ravel(order='F')*ds.get('RescaleSlope',1) + ds.get('RescaleIntercept',0)
-
-def initpool(arr):
-    """ Define array globally
-
-    """
-    global array
-    array = arr
 
 def compute_affine(ImageOrientationPatient:np.ndarray, FirstImagePositionPatient:np.ndarray, LastImagePositionPatient:np.ndarray, NumberOfSlices:int = 1, PixelSpacing:np.ndarray = [1, 1], SliceThickness: float = 1.0)->np.ndarray:
     """ Compute affine matrix in NIfTI convention (RAS+)
