@@ -13,7 +13,7 @@ dependencies = [
     "pydicom",
     "nibabel",
     "tqdm",
-    "matplotlib
+    "matplotlib"
 ]
 
 [tool.setuptools]
