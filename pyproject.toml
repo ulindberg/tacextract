@@ -11,7 +11,9 @@ dependencies = [
     "multiprocessing",
     "numpy",
     "pydicom",
-    "nibabel"
+    "nibabel",
+    "tqdm",
+    "matplotlib
 ]
 
 [tool.setuptools]
