@@ -45,7 +45,7 @@ def main(dcm_path: Path, totalsegmentatorfile: Path, outdir: Path, region: str =
     ImageOrientationPatient = ds.get('ImageOrientationPatient')
     PixelSpacing = ds.get('PixelSpacing')
     SliceThickness = ds.get('SliceThickness')
-    voxdim = PixelSpacing + [SliceThickness]
+    voxdim = list(PixelSpacing) + [SliceThickness]
 
     ## Temporal info
     # Get frame time info
