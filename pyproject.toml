@@ -6,7 +6,7 @@ readme = "README.md"
 authors = [
     { name = "Ulrich Lindberg", email = "ulrich.lindberg@regionh.dk" }
 ]
-requires-python = ">=3.12"
+requires-python = ">=3.9"
 dependencies = [
     "multiprocessing",
     "numpy",
