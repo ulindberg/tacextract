@@ -117,6 +117,13 @@ def change_array(mlistrow):
     nvoxels = ds.Columns*ds.Rows
     X_np[nvoxels*(Slice+(Frame*NumberOfSlices)):nvoxels*(Slice+1+(Frame*NumberOfSlices))] = ds.pixel_array.ravel(order='F')*ds.get('RescaleSlope',1) + ds.get('RescaleIntercept',0)
 
+def initpool(arr):
+    """ Define array globally
+
+    """
+    global array
+    array = arr
+    
 def compute_affine(ImageOrientationPatient:np.ndarray, FirstImagePositionPatient:np.ndarray, LastImagePositionPatient:np.ndarray, NumberOfSlices:int = 1, PixelSpacing:np.ndarray = [1, 1], SliceThickness: float = 1.0)->np.ndarray:
     """ Compute affine matrix in NIfTI convention (RAS+)
     Args:

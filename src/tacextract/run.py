@@ -1,5 +1,5 @@
 """ Example use """
-from tacextract.utils import create_filelist_from_series_path, dcminfo, compute_affine, change_array
+from tacextract.utils import create_filelist_from_series_path, dcminfo, compute_affine, change_array, initpool
 from tacextract.totalsegmentator import get_regionidx
 from pathlib import Path
 import numpy as np
@@ -9,13 +9,6 @@ from multiprocessing import Pool, RawArray, cpu_count
 from pydicom import dcmread
 from tqdm import tqdm
 from matplotlib import pyplot as plt
-
-def initpool(arr):
-    """ Define array globally
-
-    """
-    global array
-    array = arr
 
 def main(dcm_path: Path, totalsegmentatorfile: Path, outdir: Path, region: str = 'brain', threads: int = 2*cpu_count()//3):
     ncpus = cpu_count()
