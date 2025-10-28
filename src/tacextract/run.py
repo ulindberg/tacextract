@@ -42,9 +42,6 @@ def main(dcm_path: Path, totalsegmentatorfile: Path, outdir: Path, region: str =
     # Read first DICOM file from list
     ds = dcmread(filelist[0], stop_before_pixels=True)
 
-    # Number Of Slices (0054, 0081)
-    NumberOfFrames = MidFrameTime.size
-
     ImageOrientationPatient = ds.get('ImageOrientationPatient')
     PixelSpacing = ds.get('PixelSpacing')
     SliceThickness = ds.get('SliceThickness')
@@ -63,6 +60,7 @@ def main(dcm_path: Path, totalsegmentatorfile: Path, outdir: Path, region: str =
     
     # Compute MidFrameTime
     MidFrameTime = FrameTimesStart+FrameDuration/2
+    NumberOfFrames = MidFrameTime.size
 
     ## Slice info
     slices,sliceidx = np.unique(tlist[0], return_index=True)
