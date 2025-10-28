@@ -70,3 +70,28 @@ def tacread(filename: str):
 	units[1] = re.search(r"(?<=\[)[^)]*(?=\])",header[1]).group(0)
 
 	return tac, header, units
+
+def save_tac(filename, tac_mean, tac_std, n_voxels, time):
+    """Save TAC to CSV file with time, mu, std, n_voxels columns.
+
+    Args:
+        filename: Output CSV file path
+        tac_mean: Mean TAC values
+        tac_std: Standard deviation TAC values
+        n_voxels: Number of voxels per timepoint
+        time: Time points in seconds
+    """
+    filename = Path(filename)
+    filename.parent.mkdir(parents=True, exist_ok=True)
+
+    data = {
+        "time": [float(x) for x in time],
+        "mu": [float(x) for x in tac_mean],
+        "std": [float(x) for x in tac_std],
+        "n_voxels": [int(x) for x in n_voxels],
+    }
+
+    with open(filename, 'w', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(data.keys())  # Write headers
+        writer.writerows(zip(*data.values()))  # Write data rows
