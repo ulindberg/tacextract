@@ -1,6 +1,7 @@
 """ Example use """
 from tacextract.utils import create_filelist_from_series_path, dcminfo, compute_affine, change_array, initpool
 from tacextract.totalsegmentator import get_regionidx
+from tacextract.tacs import tacwrite
 from pathlib import Path
 import numpy as np
 import nibabel as nib
@@ -97,7 +98,7 @@ def main(dcm_path: Path, totalsegmentatorfile: Path, outdir: Path, region: str =
 
     # Allocate array in buffer and read Data
     X_shape = (ds.Columns, ds.Rows, NumberOfSlices, NumberOfFrames)
-    print(f'Allocating data array: ({X_shape}) (float64)')
+    print(f'Allocating data array: {X_shape} (float64)')
     X = RawArray('d', X_shape[0] * X_shape[1] * X_shape[2] * X_shape[3])
 
     print(f'Reading data using {threads} processes')
@@ -113,6 +114,10 @@ def main(dcm_path: Path, totalsegmentatorfile: Path, outdir: Path, region: str =
     tac_mean = img_masked.mean(axis=0)
     tac_std = img_masked.std(axis=0)
     n_voxels = np.array([seg.sum()]*len(tac_mean))
+
+    # Save as .tac file
+    tacfile = outdir / f'label-{region}_rec-mean.tac'
+    tacwrite(FrameTimesStart,FrameDuration, tac_mean, tacfile, unit='Bq/ml', label=[region])
 
     # Create Maximum intensity projections in Saggital and Coronal views
     pad = 5
